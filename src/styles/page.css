@@ -1,0 +1,16 @@
+#page {
+  border: 1px solid #000;
+}
+
+#title-area {
+  border-bottom: 1px solid #000;
+}
+
+#title-area h1 {
+  text-align: center;
+}
+
+#contents-area {
+  display: flex;
+  justify-content: center;
+}

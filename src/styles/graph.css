@@ -1,0 +1,7 @@
+#graph-area {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: whitesmoke;
+  padding: 10px;
+}
