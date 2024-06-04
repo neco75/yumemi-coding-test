@@ -5,11 +5,19 @@ import Graph from '@/components/Graph'
 import '@/styles/contents.css'
 import { useEffect, useState } from 'react'
 
+interface Composition {
+  prefName: string
+  data: { year: number; value: number }[]
+}
+
 function Contents() {
   const [prefectures, setPrefectures] = useState([])
   const [checkPrefCodes, setCheckPrefCodes] = useState<number[]>([])
+  const [composition, setComposition] = useState<Composition[]>([])
   const handleValue = (value: number) => {
-    setCheckPrefCodes([...checkPrefCodes, value])
+    if (!checkPrefCodes.includes(value)) {
+      setCheckPrefCodes([...checkPrefCodes, value])
+    }
   }
 
   async function fetchPrefectures() {
@@ -31,7 +39,7 @@ function Contents() {
         })),
       )
     } catch (error) {
-      console.log('Error fetching prefectures:', error)
+      console.error('Error fetching prefectures:', error)
       return []
     }
   }
@@ -40,10 +48,45 @@ function Contents() {
     fetchPrefectures()
   }, [])
 
+  useEffect(() => {
+    async function fetchComposition() {
+      try {
+        const headers = new Headers()
+        headers.set('X-API-KEY', process.env.NEXT_PUBLIC_API_KEY as string)
+        const response = await fetch(
+          'https://opendata.resas-portal.go.jp/api/v1/population/composition/perYear?prefCode=' +
+            String(checkPrefCodes[checkPrefCodes.length - 1]),
+          {
+            headers: headers,
+          },
+        )
+        const data = await response.json()
+        setComposition([
+          ...composition,
+          {
+            prefName: prefectures.find(
+              (prefecture) =>
+                prefecture.prefCode ===
+                checkPrefCodes[checkPrefCodes.length - 1],
+            ).prefName,
+            data: data.result.data[0].data,
+          },
+        ])
+      } catch (error) {
+        console.error('Error fetching composition:', error)
+        return []
+      }
+    }
+
+    if (checkPrefCodes.length > 0) {
+      fetchComposition()
+    }
+  }, [checkPrefCodes])
+
   return (
     <div id="contents-items">
       <CheckBox prefectures={prefectures} handleValue={handleValue} />
-      <Graph checkPrefCodes={checkPrefCodes} />
+      <Graph composition={composition} />
     </div>
   )
 }
