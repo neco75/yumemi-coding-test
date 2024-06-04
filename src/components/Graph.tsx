@@ -34,7 +34,7 @@ let series: Highcharts.SeriesOptionsType[] = [
 ]
 let categories: number[] = [1990, 1995, 2000, 2005, 2010, 2015, 2020]
 
-function Graph() {
+function Graph({ checkPrefCodes }: { checkPrefCodes: number[] }) {
   const options = {
     title: {
       text: '総人口推移',
@@ -59,6 +59,7 @@ function Graph() {
   return (
     <div id="graph-area">
       <HighchartsReact highcharts={Highcharts} options={options} />
+      <div>{checkPrefCodes}</div>
     </div>
   )
 }

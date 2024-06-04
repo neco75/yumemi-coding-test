@@ -7,6 +7,10 @@ import { useEffect, useState } from 'react'
 
 function Contents() {
   const [prefectures, setPrefectures] = useState([])
+  const [checkPrefCodes, setCheckPrefCodes] = useState<number[]>([])
+  const handleValue = (value: number) => {
+    setCheckPrefCodes([...checkPrefCodes, value])
+  }
 
   async function fetchPrefectures() {
     try {
@@ -27,7 +31,7 @@ function Contents() {
         })),
       )
     } catch (error) {
-      console.error('Error fetching prefectures:', error)
+      console.log('Error fetching prefectures:', error)
       return []
     }
   }
@@ -35,10 +39,11 @@ function Contents() {
   useEffect(() => {
     fetchPrefectures()
   }, [])
+
   return (
     <div id="contents-items">
-      <CheckBox prefectures={prefectures} />
-      <Graph />
+      <CheckBox prefectures={prefectures} handleValue={handleValue} />
+      <Graph checkPrefCodes={checkPrefCodes} />
     </div>
   )
 }
