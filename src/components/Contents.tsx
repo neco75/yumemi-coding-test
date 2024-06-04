@@ -10,13 +10,13 @@ interface Composition {
   data: { year: number; value: number }[]
 }
 
-type Prefecture = {
+interface Prefecture {
   prefCode: number
   prefName: string
 }
 
 function Contents() {
-  const [prefectures, setPrefectures] = useState([])
+  const [prefectures, setPrefectures] = useState<Prefecture[]>([])
   const [checkPrefCodes, setCheckPrefCodes] = useState<number[]>([])
   const [composition, setComposition] = useState<Composition[]>([])
   const handleValue = (value: number) => {
@@ -67,10 +67,11 @@ function Contents() {
         )
         const data = await response.json()
         if (prefectures && prefectures.length > 0) {
-          const selectedPrefecture = prefectures.find(
+          const selectedPrefecture: Prefecture | undefined = prefectures.find(
             (prefecture: Prefecture) =>
               prefecture.prefCode === checkPrefCodes[checkPrefCodes.length - 1],
           )
+
           if (selectedPrefecture) {
             setComposition([
               ...composition,
