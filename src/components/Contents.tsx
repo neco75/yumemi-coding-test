@@ -10,6 +10,11 @@ interface Composition {
   data: { year: number; value: number }[]
 }
 
+type Prefecture = {
+  prefCode: number
+  prefName: string
+}
+
 function Contents() {
   const [prefectures, setPrefectures] = useState([])
   const [checkPrefCodes, setCheckPrefCodes] = useState<number[]>([])
@@ -61,17 +66,21 @@ function Contents() {
           },
         )
         const data = await response.json()
-        setComposition([
-          ...composition,
-          {
-            prefName: prefectures.find(
-              (prefecture) =>
-                prefecture.prefCode ===
-                checkPrefCodes[checkPrefCodes.length - 1],
-            ).prefName,
-            data: data.result.data[0].data,
-          },
-        ])
+        if (prefectures && prefectures.length > 0) {
+          const selectedPrefecture = prefectures.find(
+            (prefecture: Prefecture) =>
+              prefecture.prefCode === checkPrefCodes[checkPrefCodes.length - 1],
+          )
+          if (selectedPrefecture) {
+            setComposition([
+              ...composition,
+              {
+                prefName: selectedPrefecture.prefName,
+                data: data.result.data[0].data,
+              },
+            ])
+          }
+        }
       } catch (error) {
         console.error('Error fetching composition:', error)
         return []
