@@ -5,3 +5,7 @@
   background-color: whitesmoke;
   padding: 10px;
 }
+
+#graph-area div {
+  width: 100%;
+}
